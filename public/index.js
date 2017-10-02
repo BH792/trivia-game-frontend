@@ -70,10 +70,15 @@ function renderLobby(json) {
   userLobby.innerHTML = ''
   let users = json.users
   users.forEach(user => {
-    let li = document.createElement('li')
-    li.innerHTML = user
-    userLobby.appendChild(li)
+    let button = document.createElement('button')
+    button.innerHTML = user
+    button.addEventListener('click', createGame)
+    userLobby.appendChild(button)
   })
+}
+
+function createGame(e) {
+  socket.send(JSON.stringify({header: 'createGame'}))
 }
 
 function renderQuestion(json) {
