@@ -47,7 +47,8 @@ const wss = new SocketServer({
 
 rSub.on('message', function broadcast(channel, msg) {
   this.clients.forEach(client => {
-    if (client.channel = channel) {
+    console.log(channel, client.channel, client.user);
+    if (client.channel === channel) {
       client.send(msg)
     }
   })
@@ -57,10 +58,11 @@ const wsRouter = {
   getQuestion: getQuestion,
   sendLobby: sendLobby.bind(wss),
   sendAnswer: broadcastResult,
-  createGame: createGame
+  createGame: createGame.bind(wss),
+  joinGame: joinGame.bind(wss)
 };
 
-function getQuestion() {
+function getQuestion(data) {
   https.get(triviaURL + "amount=1", resp => {
     resp.setEncoding("utf8");
     let body = "";
@@ -70,7 +72,7 @@ function getQuestion() {
     resp.on("end", () => {
       let jsonRes = JSON.parse(body).results[0];
       jsonRes.header = 'question';
-      rPub.publish('test-game', JSON.stringify(jsonRes));
+      rPub.publish(data.gameCode, JSON.stringify(jsonRes));
     });
   });
 }
@@ -90,12 +92,38 @@ function sendLobby(data, ws) {
 
 function broadcastResult(data) {
   data.header = 'broadcastResult';
-  rPub.publish('test-game', JSON.stringify(data));
+  rPub.publish(data.gameCode, JSON.stringify(data));
 }
 
 function createGame(data, ws) {
   let gameCode = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0,5).toUpperCase()
+  ws.channel = gameCode
+  rSub.subscribe(gameCode)
+  json = {
+    header: 'sendGame',
+    gameCode: gameCode,
+    users: [ws.user]
+  }
+  ws.send(JSON.stringify(json))
+  sendLobby.call(this)
+}
 
+function joinGame(data, ws) {
+  // TODO: check this gameCode exists
+  let gameCode = data.gameCode
+  ws.channel = gameCode
+  json = {
+    header: 'sendGame',
+    gameCode: gameCode,
+    users: []
+  }
+  wss.clients.forEach(client => {
+    if (client.channel === gameCode) {
+      json.users.push(client.user)
+    }
+  })
+  rPub.publish(gameCode, JSON.stringify(json))
+  sendLobby.call(this)
 }
 
 rSub.subscribe('lobby');
