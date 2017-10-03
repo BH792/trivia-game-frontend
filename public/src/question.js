@@ -12,3 +12,7 @@ class Question {
     return shuffedArray
   }
 }
+
+function test() {
+  console.log(results);
+}
