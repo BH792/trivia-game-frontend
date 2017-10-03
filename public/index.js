@@ -1,4 +1,4 @@
-document.querySelector('#username').addEventListener('submit', SocketSend.connect)
+document.querySelector('#username').addEventListener('submit',connect)
 let questionDiv = document.querySelector('#question')
 let options = document.querySelector('#options')
 let userLobby = document.querySelector('#user-lobby')
@@ -9,6 +9,14 @@ let username;
 let currentQuestion;
 const url = 'http://localhost:3000'
 const wsurl = 'ws://localhost:3000'
+
+function connect(e) {
+  e.preventDefault()
+  username = e.target[0].value
+  socket = new WebSocket(wsurl + '/' + username)
+  socket.addEventListener('message', SocketReceiveRouter)
+  appState.connectedState(e);
+}
 
 function checkAnswer() {
   let result = this.innerHTML === currentQuestion.answer ? `${username} is Correct!` : `${username} is Wrong!`
