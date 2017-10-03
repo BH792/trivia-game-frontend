@@ -4,38 +4,26 @@ const cors = require('cors');
 const SocketServer = require('ws').Server;
 const cookieParser = require('cookie-parser')
 const redis = require('redis')
+const questionRouter = require('./routes/question');
 
 const rPub = redis.createClient();
 const rSub = redis.createClient();
 
+const port = process.env.PORT || 3000;
 const app = express();
 const router = express.Router();
-const port = 3000;
 
 const triviaURL = 'https://opentdb.com/api.php?';
 
 app.use( express.static( __dirname + '/public' ));
-
-router.get('/question', function(req, res){
-  https.get(triviaURL + "amount=1", resp => {
-    resp.setEncoding("utf8");
-    let body = "";
-    resp.on("data", data => {
-      body += data;
-    });
-    resp.on("end", () => {
-      body = JSON.parse(body);
-      res.json(body);
-    });
-  });
-});
 
 router.get('/', function(req, res) {
   res.sendFile('/public/index.html', {root: __dirname })
 })
 
 app.use(cors());
-// app.use(cookieParser('this-is-a-super-secret-secret'))
+app.use(cookieParser('this-is-a-super-secret-secret'))
+app.use('/question', questionRouter)
 app.use('/', router)
 
 const server = app.listen(port, () => console.log('Listening on Port: ', port));

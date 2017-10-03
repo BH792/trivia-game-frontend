@@ -114,12 +114,13 @@ function getQuestionWS() {
 function renderQuestion(json) {
   debugger
   let question = new Question(json)
-  options.innerHTML = ""
+  options.innerHTML = ''
+  results.innerHTML = ''
   currentQuestion = question
   questionDiv.innerHTML = `<h2> ${currentQuestion.question} </h2>`
   currentQuestion.choices.forEach( choice => {
     let button = document.createElement('button')
-    button.className = "btn btn-outline-primary answer-btn"
+    button.className = 'btn btn-outline-primary answer-btn'
     button.innerHTML = choice
     button.addEventListener('click', checkAnswerWS)
     options.appendChild(button)
