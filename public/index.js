@@ -2,6 +2,7 @@ window.onload = function() {
   document.querySelector('#create-game').addEventListener('click', SocketSend.createGame)
   document.querySelector('#join-game').addEventListener('submit', SocketSend.joinGame)
   document.querySelector('#username').addEventListener('submit',connect)
+  document.querySelector('#start-game').addEventListener('click', SocketSend.startGame)
 }
 
 let questionDiv = document.querySelector('#question')
@@ -51,7 +52,7 @@ function getQuestion() {
 
 function SocketReceiveRouter(msgEvent) {
   let dataJSON = JSON.parse(msgEvent.data)
-  console.log(dataJSON.header);
+  console.log(dataJSON);
   if (SocketReceive[dataJSON.header]) {
     (SocketReceive[dataJSON.header])(dataJSON)
   }

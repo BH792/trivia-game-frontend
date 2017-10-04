@@ -21,47 +21,6 @@ router.get('/', function(req, res) {
   res.sendFile('/public/index.html', {root: __dirname })
 })
 
-function getRandomIntInclusive(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getFiveRandUniqInts(min, max){
-  let randArray = [];
-
-  for (let i = 0; i<5; i++){
-    while(randArray.length < 5){
-      let j = getRandomIntInclusive(min, max);
-      if (!randArray.includes(j)) {
-        randArray.push(j)
-      }
-    }
-  }
-  return randArray;
-}
-
-app.get('/game/:gameid', function game(req, res) {
-  let gameID = req.params.gameid;
-  rPub.publish(gameID, 'playState')
-  let randCats = getFiveRandUniqInts(9, 32)
-  randCats.forEach((cat)=>{
-    https.get(triviaURL + "amount=5" + `&category=${cat}`, resp => {
-      resp.setEncoding("utf8");
-      let body = "";
-      resp.on("data", data => {
-        body += data;
-      });
-      resp.on("end", () => {
-        let category = JSON.parse(body).results[0].category
-        console.log(category)
-        rPub.hmset([gameID, category, body])
-        rPub.publish(gameID, category)
-      });
-    })
-  });
-  res.send('done');
-})
-
-
 app.use(cors());
 app.use(cookieParser('this-is-a-super-secret-secret'))
 app.use('/question', questionRouter)

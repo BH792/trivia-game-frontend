@@ -1,4 +1,6 @@
 const https = require('https')
+const randomInt = require('./randomInt')
+const triviaURL = 'https://opentdb.com/api.php?';
 
 class wsRouter {
   constructor(rPub, rSub, wss) {
@@ -8,13 +10,13 @@ class wsRouter {
   }
 
   getQuestion(data) {
-    https.get(triviaURL + "amount=1", resp => {
-      resp.setEncoding("utf8");
-      let body = "";
-      resp.on("data", data => {
+    https.get(triviaURL + 'amount=1', resp => {
+      resp.setEncoding('utf8');
+      let body = '';
+      resp.on('data', data => {
         body += data;
       });
-      resp.on("end", () => {
+      resp.on('end', () => {
         let jsonRes = JSON.parse(body).results[0];
         jsonRes.header = 'question';
         this.rPub.publish(data.gameCode, JSON.stringify(jsonRes));
@@ -72,34 +74,28 @@ class wsRouter {
   }
 
   startGame(data) {
-    let gameID = data.gameID;
-    this.rPub.publish(gameID, 'playState')
-    let randCats = getFiveRandUniqInts(9, 32)
+    let gameCode = data.gameCode;
+    this.rPub.publish(gameCode, JSON.stringify({header: 'showTable'}))
+    let randCats = randomInt.getFiveRandUniqInts(9, 32)
     randCats.forEach((cat)=>{
-      https.get(triviaURL + "amount=5" + `&category=${cat}`, resp => {
-        resp.setEncoding("utf8");
-        let body = "";
-        resp.on("data", data => {
+      https.get(triviaURL + 'amount=5' + `&category=${cat}`, resp => {
+        resp.setEncoding('utf8');
+        let body = '';
+        resp.on('data', data => {
           body += data;
         });
-        resp.on("end", () => {
+        resp.on('end', () => {
           let category = JSON.parse(body).results[0].category
           console.log(category)
-          this.rPub.hmset([gameID, category, body])
-          this.rPub.publish(gameID, category)
+          this.rPub.hmset([gameCode, category, body])
+          this.rPub.publish(gameCode, JSON.stringify({
+            header: 'gameCategory',
+            category: category
+          }))
         });
       })
     });
   }
 }
-
-// const wsRouter = {
-//   getQuestion: getQuestion,
-//   sendLobby: sendLobby.bind(wss),
-//   sendAnswer: broadcastResult,
-//   createGame: createGame.bind(wss),
-//   joinGame: joinGame.bind(wss),
-//   startGame: startGame
-// };
 
 module.exports = wsRouter

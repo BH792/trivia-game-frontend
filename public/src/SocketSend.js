@@ -36,6 +36,11 @@ const SocketSend = (function SocketSend() {
     socket.send(JSON.stringify(json))
   }
 
+  function startGame() {
+    let gameCode = document.querySelector('#game-code-header').innerText;
+    socket.send(JSON.stringify({header: 'startGame', gameCode: gameCode}));
+  }
+
   return {
     getQuestion: getQuestion,
     checkAnswer: checkAnswer,

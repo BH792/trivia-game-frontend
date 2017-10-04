@@ -41,10 +41,28 @@ const SocketReceive = (function SocketReceive() {
     renderLobby(json)
   }
 
+  function gameCategory(json) {
+    let category = json.category
+    console.log(category)
+    let cats = document.querySelector('#game-question-board-categories').children
+    for (let i = 0; i < cats.length; i++) {
+      if (cats[i].innerText === 'Category') {
+        cats[i].innerText = category;
+        break
+      }
+    }
+  }
+
+  function showTable(json) {
+    document.querySelector('#game-question-board').style.display = 'block';
+  }
+
   return {
     renderLobby: renderLobby,
     question: renderQuestion,
     broadcastResult: renderResult,
-    sendGame: renderGame
+    sendGame: renderGame,
+    gameCategory: gameCategory,
+    showTable: showTable
   }
 })()

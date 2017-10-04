@@ -18,4 +18,26 @@ router.get('/', function(req, res){
   });
 });
 
+// router.get('/game/:gameid', function game(req, res) {
+//   let gameID = req.params.gameid;
+//   rPub.publish(gameID, 'playState')
+//   let randCats = randomInt.getFiveRandUniqInts(9, 32)
+//   randCats.forEach((cat)=>{
+//     https.get(triviaURL + "amount=5" + `&category=${cat}`, resp => {
+//       resp.setEncoding("utf8");
+//       let body = "";
+//       resp.on("data", data => {
+//         body += data;
+//       });
+//       resp.on("end", () => {
+//         let category = JSON.parse(body).results[0].category
+//         console.log(category)
+//         rPub.hmset([gameID, category, body])
+//         rPub.publish(gameID, category)
+//       });
+//     })
+//   });
+//   res.send('done');
+// })
+
 module.exports = router;

@@ -11,7 +11,6 @@ const appState = (function appState(){
   function playState(){
     clearScreen()
     document.querySelector('#playState').style.display = 'block'
-
   }
 
   return {
