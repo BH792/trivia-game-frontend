@@ -1,8 +1,15 @@
 const SocketSend = (function SocketSend() {
-  function getQuestion() {
+
+  function getQuestion(event) {
+    let questionNumber = parseInt(event.target.parentNode.parentNode.dataset.row)
+    let rowNum = parseInt(event.target.dataset.col)
+    let tableHeader = document.getElementById('game-question-board-categories');
+    let catName = tableHeader.children[rowNum].innerText
     let json = {
       header: 'getQuestion',
-      gameCode: document.querySelector('#game-code-header').innerText
+      gameCode: document.querySelector('#game-code-header').innerText,
+      category: catName,
+      questionNumber: questionNumber
     }
     socket.send(JSON.stringify(json))
   }

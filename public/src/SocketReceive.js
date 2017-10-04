@@ -11,24 +11,28 @@ const SocketReceive = (function SocketReceive() {
   }
 
   function renderQuestion(json) {
+    let row = document.querySelector(`tr[data-row="${json.buttonID[1]}"]`).dataset.row
+    let catArr = Array.from(document.querySelector('#game-question-board-categories').children)
+    let col = catArr.indexOf(catArr.find(node => {return node.innerText === json.buttonID[0]}))
+    document.querySelector(`#r${row}-c${col}`).disabled = true
     let question = new Question(json)
-    options.innerHTML = ''
-    results.innerHTML = ''
-    currentQuestion = question
-    questionDiv.innerHTML = `<h2> ${currentQuestion.question} </h2>`
-    currentQuestion.choices.forEach( choice => {
+    questionOptions.innerHTML = ''
+    questionResults.innerHTML = ''
+    // currentQuestion = question
+    questionQuestion.innerHTML = `<h2> ${question.question} </h2>`
+    question.choices.forEach(choice => {
       let button = document.createElement('button')
       button.className = 'btn btn-outline-primary answer-btn'
       button.innerHTML = choice
       button.addEventListener('click', SocketSend.checkAnswer)
-      options.appendChild(button)
+      questionOptions.appendChild(button)
     })
   }
 
   function renderResult(json) {
     let p = document.createElement('p')
     p.innerText = json.result
-    results.appendChild(p)
+    questionResults.appendChild(p)
   }
 
   function renderGame(json) {
@@ -59,7 +63,7 @@ const SocketReceive = (function SocketReceive() {
 
   return {
     renderLobby: renderLobby,
-    question: renderQuestion,
+    renderQuestion: renderQuestion,
     broadcastResult: renderResult,
     sendGame: renderGame,
     gameCategory: gameCategory,

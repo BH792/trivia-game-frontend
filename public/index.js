@@ -3,12 +3,13 @@ window.onload = function() {
   document.querySelector('#join-game').addEventListener('submit', SocketSend.joinGame)
   document.querySelector('#username').addEventListener('submit',connect)
   document.querySelector('#start-game').addEventListener('click', SocketSend.startGame)
+  document.querySelector('#game-question-board-buttons').addEventListener('click', SocketSend.getQuestion);
 }
 
-let questionDiv = document.querySelector('#question')
-let options = document.querySelector('#options')
+let questionQuestion = document.querySelector('#question-question')
+let questionOptions = document.querySelector('#question-options')
 let userLobby = document.querySelector('#user-lobby')
-let results = document.querySelector('#results')
+let questionResults = document.querySelector('#question-results')
 
 let socket;
 let username;
@@ -30,15 +31,15 @@ function checkAnswer() {
 }
 
 function showQuestion(question) {
-  options.innerHTML = ""
+  questionOptions.innerHTML = ""
   currentQuestion = question
-  questionDiv.innerHTML = `<h2> ${currentQuestion.question} </h2>`
+  questionQuestion.innerHTML = `<h2> ${currentQuestion.question} </h2>`
   currentQuestion.choices.forEach( choice => {
     let button = document.createElement('button')
     button.className = "btn btn-outline-primary"
     button.innerHTML = choice
     button.addEventListener('click', checkAnswer)
-    options.appendChild(button)
+    questionOptions.appendChild(button)
   })
 }
 

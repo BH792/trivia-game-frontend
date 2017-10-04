@@ -10,18 +10,16 @@ class wsRouter {
   }
 
   getQuestion(data) {
-    https.get(triviaURL + 'amount=1', resp => {
-      resp.setEncoding('utf8');
-      let body = '';
-      resp.on('data', data => {
-        body += data;
-      });
-      resp.on('end', () => {
-        let jsonRes = JSON.parse(body).results[0];
-        jsonRes.header = 'question';
-        this.rPub.publish(data.gameCode, JSON.stringify(jsonRes));
-      });
-    });
+    console.log('getting question from redis')
+    let gameCode = data.gameCode;
+    let category = data.category;
+    this.rPub.hget(gameCode, category, (err, reply) => {
+      let questionsJSON = JSON.parse(reply);
+      let json = questionsJSON.results[data.questionNumber]
+      json.header = 'renderQuestion'
+      json.buttonID = [category, data.questionNumber]
+      this.rPub.publish(gameCode, JSON.stringify(json));
+    })
   }
 
   sendLobby(data, ws) {
@@ -69,6 +67,7 @@ class wsRouter {
         json.users.push(client.user)
       }
     })
+    this.rSub.subscribe(gameCode)
     this.rPub.publish(gameCode, JSON.stringify(json))
     this.sendLobby()
   }
@@ -85,7 +84,13 @@ class wsRouter {
           body += data;
         });
         resp.on('end', () => {
-          let category = JSON.parse(body).results[0].category
+          let fullCategory = JSON.parse(body).results[0].category
+          let category;
+          if (fullCategory.match(/:/)) {
+            category = fullCategory.split(": ")[1]
+          } else {
+            category = fullCategory
+          }
           console.log(category)
           this.rPub.hmset([gameCode, category, body])
           this.rPub.publish(gameCode, JSON.stringify({

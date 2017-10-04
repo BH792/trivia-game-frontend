@@ -7,9 +7,17 @@
     <title>Jeopardy</title>
   </head>
   <body>
-    <div id="question"></div>
-    <div id="options"></div>
-    <div id="results"></div>
+    <style media="screen">
+      .question-button {
+        height: 125px;
+        width: 125px;
+      }
+
+      .question-button:disabled {
+        color: lightgrey;
+        background-color: lightgrey;
+      }
+    </style>
 
     <div id="loginState">
       <form id="username" >
@@ -31,6 +39,11 @@
     </div>
 
     <div id="playState" style="display: none;">
+      <div class="questions">
+        <div id="question-question"></div>
+        <div id="question-options"></div>
+        <div id="question-results"></div>
+      </div>
       <h2 id="game-code-header"></h2>
       <button type="button" class="btn btn-outline-danger margin" id="start-game" disabled='true'>Start Game</button>
       <table id="game-question-board" style="display: none;">
@@ -41,41 +54,43 @@
           <th>Category</th>
           <th>Category</th>
         </tr>
-        <tr class="row-1">
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-        </tr>
-        <tr class="row-2">
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-        </tr>
-        <tr class="row-3">
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-        </tr>
-        <tr class="row-4">
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-        </tr>
-        <tr class="row-5">
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-          <td><button type="button" name="button">Question</button></td>
-        </tr>
+        <tbody id="game-question-board-buttons">
+          <tr data-row= '0'>
+            <td><button data-col='0' id="r0-c0" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='1' id="r0-c1" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='2' id="r0-c2" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='3' id="r0-c3" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='4' id="r0-c4" type="button" class="btn btn-primary question-button">Question</button></td>
+          </tr>
+          <tr data-row= '1'>
+            <td><button data-col='0' id="r1-c0" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='1' id="r1-c1" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='2' id="r1-c2" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='3' id="r1-c3" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='4' id="r1-c4" type="button" class="btn btn-primary question-button">Question</button></td>
+          </tr>
+          <tr data-row= '2'>
+            <td><button data-col='0' id="r2-c0" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='1' id="r2-c1" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='2' id="r2-c2" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='3' id="r2-c3" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='4' id="r2-c4" type="button" class="btn btn-primary question-button">Question</button></td>
+          </tr>
+          <tr data-row= '3'>
+            <td><button data-col='0' id="r3-c0" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='1' id="r3-c1" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='2' id="r3-c2" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='3' id="r3-c3" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='4' id="r3-c4" type="button" class="btn btn-primary question-button">Question</button></td>
+          </tr>
+          <tr data-row= '4'>
+            <td><button data-col='0' id="r4-c0" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='1' id="r4-c1" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='2' id="r4-c2" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='3' id="r4-c3" type="button" class="btn btn-primary question-button">Question</button></td>
+            <td><button data-col='4' id="r4-c4" type="button" class="btn btn-primary question-button">Question</button></td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
