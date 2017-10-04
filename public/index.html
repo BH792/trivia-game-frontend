@@ -7,60 +7,11 @@
     <title>Jeopardy</title>
   </head>
   <body>
-    <div id="display">
-      <div id="question"></div>
-      <div id="options"></div>
-      <div id="results"></div>
+    <div id="question"></div>
+    <div id="options"></div>
+    <div id="results"></div>
 
-      <div id="gameBoard">
-        <table>
-          <tr>
-            <th>Category 1</th>
-            <th>Category 2</th>
-            <th>Category 3</th>
-            <th>Category 4</th>
-            <th>Category 5</th>
-          </tr>
-          <tr class="row-1">
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-          </tr>
-          <tr class="row-2">
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-          </tr>
-          <tr class="row-3">
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-          </tr>
-          <tr class="row-4">
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-          </tr>
-          <tr class="row-5">
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-            <td><button type="button" name="button">Question</button></td>
-          </tr>
-        </table>
-      </div>
-
-      <button type="button" class="btn btn-outline-danger margin" onclick="getQuestion()">Get Question (old)</button>
-      <br>
+    <div id="loginState">
       <form id="username" >
         <div class="input-group" style="width: 400px; margin-left: 20px">
           <span class="input-group-addon" id="basic-addon1">@</span>
@@ -68,11 +19,68 @@
         </div>
         <button type="submit" class="btn btn-primary margin">Connect</button>
       </form>
-      <br>
+    </div>
+
+    <div id="connectedState" style="display: none;">
+      <button type="submit" id="create-game" class="btn btn-outline-danger margin">Create Game</button>
+      <form id="join-game">
+        <input type="text" placeholder="Enter Game Code">
+        <input type="submit" value="Connect">
+      </form>
       <ul id="user-lobby"></ul>
     </div>
+
+    <div id="playState" style="display: none;">
+      <h2 id="game-code-header"></h2>
+      <button type="button" class="btn btn-outline-danger margin" id="start-game" disabled='true'>Start Game</button>
+      <table style="display: none;">
+        <tr>
+          <th>Category 1</th>
+          <th>Category 2</th>
+          <th>Category 3</th>
+          <th>Category 4</th>
+          <th>Category 5</th>
+        </tr>
+        <tr class="row-1">
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+        </tr>
+        <tr class="row-2">
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+        </tr>
+        <tr class="row-3">
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+        </tr>
+        <tr class="row-4">
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+        </tr>
+        <tr class="row-5">
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+          <td><button type="button" name="button">Question</button></td>
+        </tr>
+      </table>
+    </div>
+
     <div class="scripts">
-      <script src="src/playState.js"></script>
+      <script src="src/appState.js"></script>
       <script src="src/SocketSend.js"></script>
       <script src="src/SocketReceive.js"></script>
       <script src="src/question.js"></script>

@@ -1,4 +1,9 @@
-document.querySelector('#username').addEventListener('submit',connect)
+window.onload = function() {
+  document.querySelector('#create-game').addEventListener('click', SocketSend.createGame)
+  document.querySelector('#join-game').addEventListener('submit', SocketSend.joinGame)
+  document.querySelector('#username').addEventListener('submit',connect)
+}
+
 let questionDiv = document.querySelector('#question')
 let options = document.querySelector('#options')
 let userLobby = document.querySelector('#user-lobby')

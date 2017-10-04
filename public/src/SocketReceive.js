@@ -32,24 +32,10 @@ const SocketReceive = (function SocketReceive() {
   }
 
   function renderGame(json) {
-    let createGame = document.querySelector('#create-game')
-    let joinGame = document.querySelector('#join-game')
-    let getQButton = document.querySelector('#get-question')
-    if (createGame && joinGame) {
-      document.body.removeChild(createGame)
-      document.body.removeChild(joinGame)
-      let codeH2 = document.createElement('h2')
-      codeH2.id = 'game-code-header'
-      codeH2.innerText = json.gameCode
-      document.body.appendChild(codeH2)
-    }
-    if (json.users.length > 1 && !getQButton) {
-      let b = document.createElement('button')
-      b.id = 'get-question'
-      b.className = "btn btn-outline-danger margin"
-      b.innerText = "Start Game"
-      b.addEventListener('click', SocketSend.getQuestion)
-      document.body.appendChild(b)
+    appState.playState()
+    document.querySelector('#game-code-header').innerText = json.gameCode
+    if (json.users.length > 1) {
+      document.querySelector('#start-game').disabled = false
     }
 
     renderLobby(json)

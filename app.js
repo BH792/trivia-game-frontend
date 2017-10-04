@@ -21,6 +21,47 @@ router.get('/', function(req, res) {
   res.sendFile('/public/index.html', {root: __dirname })
 })
 
+function getRandomIntInclusive(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getFiveRandUniqInts(min, max){
+  let randArray = [];
+
+  for (let i = 0; i<5; i++){
+    while(randArray.length < 5){
+      let j = getRandomIntInclusive(min, max);
+      if (!randArray.includes(j)) {
+        randArray.push(j)
+      }
+    }
+  }
+  return randArray;
+}
+
+app.get('/game/:gameid', function game(req, res) {
+  let gameID = req.params.gameid;
+  rPub.publish(gameID, 'playState')
+  let randCats = getFiveRandUniqInts(9, 32)
+  randCats.forEach((cat)=>{
+    https.get(triviaURL + "amount=5" + `&category=${cat}`, resp => {
+      resp.setEncoding("utf8");
+      let body = "";
+      resp.on("data", data => {
+        body += data;
+      });
+      resp.on("end", () => {
+        let category = JSON.parse(body).results[0].category
+        console.log(category)
+        rPub.hmset([gameID, category, body])
+        rPub.publish(gameID, category)
+      });
+    })
+  });
+  res.send('done');
+})
+
+
 app.use(cors());
 app.use(cookieParser('this-is-a-super-secret-secret'))
 app.use('/question', questionRouter)
@@ -42,77 +83,8 @@ rSub.on('message', function broadcast(channel, msg) {
   })
 }.bind(wss));
 
-const wsRouter = {
-  getQuestion: getQuestion,
-  sendLobby: sendLobby.bind(wss),
-  sendAnswer: broadcastResult,
-  createGame: createGame.bind(wss),
-  joinGame: joinGame.bind(wss)
-};
-
-function getQuestion(data) {
-  https.get(triviaURL + "amount=1", resp => {
-    resp.setEncoding("utf8");
-    let body = "";
-    resp.on("data", data => {
-      body += data;
-    });
-    resp.on("end", () => {
-      let jsonRes = JSON.parse(body).results[0];
-      jsonRes.header = 'question';
-      rPub.publish(data.gameCode, JSON.stringify(jsonRes));
-    });
-  });
-}
-
-function sendLobby(data, ws) {
-  let json = {
-    header: 'renderLobby',
-    users: []
-  }
-  this.clients.forEach(client => {
-    if (client.channel === 'lobby') {
-      json.users.push(client.user)
-    }
-  })
-  rPub.publish('lobby', JSON.stringify(json))
-}
-
-function broadcastResult(data) {
-  data.header = 'broadcastResult';
-  rPub.publish(data.gameCode, JSON.stringify(data));
-}
-
-function createGame(data, ws) {
-  let gameCode = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0,5).toUpperCase()
-  ws.channel = gameCode
-  rSub.subscribe(gameCode)
-  json = {
-    header: 'sendGame',
-    gameCode: gameCode,
-    users: [ws.user]
-  }
-  ws.send(JSON.stringify(json))
-  sendLobby.call(this)
-}
-
-function joinGame(data, ws) {
-  // TODO: check this gameCode exists
-  let gameCode = data.gameCode
-  ws.channel = gameCode
-  json = {
-    header: 'sendGame',
-    gameCode: gameCode,
-    users: []
-  }
-  wss.clients.forEach(client => {
-    if (client.channel === gameCode) {
-      json.users.push(client.user)
-    }
-  })
-  rPub.publish(gameCode, JSON.stringify(json))
-  sendLobby.call(this)
-}
+const SocketRouter = require('./wsRouter')
+const wsRouter = new SocketRouter(rPub, rSub, wss)
 
 rSub.subscribe('lobby');
 wss.on('connection', function(ws, req) {
