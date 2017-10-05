@@ -18,7 +18,7 @@ const triviaURL = 'https://opentdb.com/api.php?';
 app.use( express.static( __dirname + '/public' ));
 
 router.get('/', function(req, res) {
-  res.sendFile('/public/index.html', {root: __dirname })
+  res.sendFile('index.html', {root: __dirname })
 })
 
 app.use(cors());
