@@ -16,10 +16,13 @@ const SocketReceive = (function SocketReceive() {
     let col = catArr.indexOf(catArr.find(node => {return node.innerText === json.buttonID[0]}))
     document.querySelector(`#r${row}-c${col}`).disabled = true
     let question = new Question(json)
+    let hashedAnswer = btoa(unescape(encodeURIComponent(question.answer)))
+    questionOptions.dataset.answer = hashedAnswer;
     questionOptions.innerHTML = ''
     questionResults.innerHTML = ''
-    // currentQuestion = question
     questionQuestion.innerHTML = `<h2> ${question.question} </h2>`
+    questionQuestion.dataset.id = `r${row}-c${col}`
+    questionQuestion.dataset.difficulty = json.difficulty
     question.choices.forEach(choice => {
       let button = document.createElement('button')
       button.className = 'btn btn-outline-primary answer-btn'
@@ -35,14 +38,27 @@ const SocketReceive = (function SocketReceive() {
     questionResults.appendChild(p)
   }
 
-  function renderGame(json) {
-    appState.playState()
+  function renderGameLobby(json) {
+    appState.gameLobbyState()
     document.querySelector('#game-code-header').innerText = json.gameCode
-    if (json.users.length > 1) {
-      document.querySelector('#start-game').disabled = false
+    let gameLobby = document.querySelector('#game-lobby')
+
+    let currentUsers = {}
+    for (var i = 0; i < gameLobby.children.length; i++) {
+      currentUsers[gameLobby.children[i].innerText] = true
     }
 
-    renderLobby(json)
+    json.users.forEach(user => {
+      if (!currentUsers[user]) {
+        let li = document.createElement('li')
+        li.innerText = user
+        gameLobby.appendChild(li)
+      }
+    })
+
+    if (gameLobby.children.length > 1) {
+      document.querySelector('#start-game').disabled = false
+    }
   }
 
   function gameCategory(json) {
@@ -57,16 +73,24 @@ const SocketReceive = (function SocketReceive() {
     }
   }
 
-  function showTable(json) {
-    document.querySelector('#game-question-board').style.display = 'block';
+  function startGame(json) {
+    appState.playState()
+  }
+
+  function renderQuestionResults(json) {
+    let results = document.querySelector('#question-options')
+    let answer = atob(document.querySelector('#question-options').dataset.answer)
+
+    results.innerHTML = `${json.user} was ${json.result ? 'correct' : 'wrong'}, the answer was ${answer}! This question was worth ${json.points}`
   }
 
   return {
     renderLobby: renderLobby,
     renderQuestion: renderQuestion,
     broadcastResult: renderResult,
-    sendGame: renderGame,
+    sendGame: renderGameLobby,
     gameCategory: gameCategory,
-    showTable: showTable
+    startGame: startGame,
+    sendQuestionResults: renderQuestionResults
   }
 })()

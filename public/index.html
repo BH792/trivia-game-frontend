@@ -38,15 +38,22 @@
       <ul id="user-lobby"></ul>
     </div>
 
+    <div id="gameLobbyState" style="display: none;">
+      <h2 id="game-code-header"></h2>
+      <button type="button" class="btn btn-outline-danger margin" id="start-game" disabled='true'>Start Game</button>
+      <h4>Connected Players</h4>
+      <ul id="game-lobby"></ul>
+    </div>
+
     <div id="playState" style="display: none;">
       <div class="questions">
         <div id="question-question"></div>
         <div id="question-options"></div>
         <div id="question-results"></div>
       </div>
-      <h2 id="game-code-header"></h2>
-      <button type="button" class="btn btn-outline-danger margin" id="start-game" disabled='true'>Start Game</button>
-      <table id="game-question-board" style="display: none;">
+      <!-- <h2 id="game-code-header"></h2>
+      <button type="button" class="btn btn-outline-danger margin" id="start-game" disabled='true'>Start Game</button> -->
+      <table id="game-question-board">
         <tr id="game-question-board-categories">
           <th>Category</th>
           <th>Category</th>

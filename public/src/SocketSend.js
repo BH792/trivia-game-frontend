@@ -14,14 +14,20 @@ const SocketSend = (function SocketSend() {
     socket.send(JSON.stringify(json))
   }
 
-  function checkAnswer() {
-    let result = this.innerHTML === currentQuestion.answer ? `${username} is Correct!` : `${username} is Wrong!`
-    document.querySelectorAll('.answer-btn').forEach(btn => {btn.disabled = true})
+  function checkAnswer(event) {
+    let questionCode = event.currentTarget.parentElement.parentElement.children[0].dataset.id
+    let questionAnswer = event.currentTarget.parentElement.dataset.answer;
+    let clickedAnswer = btoa(unescape(encodeURIComponent(event.currentTarget.innerText)))
+    let questionDifficulty = event.currentTarget.parentElement.parentElement.children[0].dataset.difficulty
+
     let json = {
-      header: 'sendAnswer',
-      result: result,
+      header: 'sendQuestionAnswer',
+      result: (questionAnswer == clickedAnswer),
+      questionCode: questionCode,
+      difficulty: questionDifficulty,
       gameCode: document.querySelector('#game-code-header').innerText
     }
+
     socket.send(JSON.stringify(json))
   }
 

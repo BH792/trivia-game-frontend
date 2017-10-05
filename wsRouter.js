@@ -74,7 +74,7 @@ class wsRouter {
 
   startGame(data) {
     let gameCode = data.gameCode;
-    this.rPub.publish(gameCode, JSON.stringify({header: 'showTable'}))
+    this.rPub.publish(gameCode, JSON.stringify({header: 'startGame'}))
     let randCats = randomInt.getFiveRandUniqInts(9, 32)
     randCats.forEach((cat)=>{
       https.get(triviaURL + 'amount=5' + `&category=${cat}`, resp => {
@@ -100,6 +100,35 @@ class wsRouter {
         });
       })
     });
+  }
+
+  sendQuestionAnswer(data, ws) {
+    let gameCode = data.gameCode
+    let questionCode = data.questionCode
+
+    this.rPub.hget(gameCode, questionCode, function(err, reply) {
+      if (!reply) {
+        this.rPub.hmset(gameCode, questionCode, true)
+        let points;
+
+        if (data.difficulty === 'easy') {
+          points = 100
+        } else if (data.difficulty === 'medium') {
+          points = 200
+        } else {
+          points = 300
+        }
+
+        let json = {
+          header: 'sendQuestionResults',
+          user: ws.user,
+          result: data.result,
+          points: points
+        }
+
+        this.rPub.publish(gameCode, JSON.stringify(json))
+      }
+    }.bind(this))
   }
 }
 

@@ -14,8 +14,8 @@ let questionResults = document.querySelector('#question-results')
 let socket;
 let username;
 let currentQuestion;
-const url = 'http://localhost:3000'
-const wsurl = 'ws://localhost:3000'
+const url = 'http://192.168.3.106:3000'
+const wsurl = 'ws://192.168.3.106:3000'
 
 function connect(e) {
   e.preventDefault()
