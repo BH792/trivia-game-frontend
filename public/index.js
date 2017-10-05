@@ -25,11 +25,6 @@ function connect(e) {
   appState.connectedState(e);
 }
 
-function checkAnswer() {
-  let result = this.innerHTML === currentQuestion.answer ? `${username} is Correct!` : `${username} is Wrong!`
-  alert(result)
-}
-
 function showQuestion(question) {
   questionOptions.innerHTML = ""
   currentQuestion = question

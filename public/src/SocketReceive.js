@@ -74,12 +74,43 @@ const SocketReceive = (function SocketReceive() {
   }
 
   function startGame(json) {
+    let playerOneName = document.querySelector('#game-lobby').children[0].innerText
+    let playerTwoName = document.querySelector('#game-lobby').children[1].innerText
+
+    document.querySelector('#playerOneName').innerHTML = playerOneName;
+    document.querySelector('#playerTwoName').innerHTML = playerTwoName;
+
     appState.playState()
   }
 
   function renderQuestionResults(json) {
     let results = document.querySelector('#question-options')
+
+    let playerOneName = document.querySelector('#playerOneName').innerText
+    let playerTwoName = document.querySelector('#playerTwoName').innerText
+    let playerOneScore = document.querySelector('#playerOneScore')
+    let playerTwoScore = document.querySelector('#playerTwoScore')
     let answer = atob(document.querySelector('#question-options').dataset.answer)
+
+    if (!json.result) {
+      if (playerOneName !== json.user) {
+        playerOneScore.innerHTML = parseInt(playerOneScore.innerHTML) + (json.points/2)
+      } else {
+        playerTwoScore.innerHTML = parseInt(playerTwoScore.innerHTML) + (json.points/2)
+      }
+      socket.send(JSON.stringify({
+        header: 'addPoints',
+        points: (json.points/2),
+        gameCode: json.gameCode,
+        user: json.user
+      }))
+    } else{
+      if (playerOneName === json.user) {
+        playerOneScore.innerHTML = parseInt(playerOneScore.innerHTML) + json.points
+      } else {
+        playerTwoScore.innerHTML = parseInt(playerTwoScore.innerHTML) + json.points
+      }
+    }
 
     results.innerHTML = `${json.user} was ${json.result ? 'correct' : 'wrong'}, the answer was ${answer}! This question was worth ${json.points}`
   }

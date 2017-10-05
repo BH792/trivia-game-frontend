@@ -42,6 +42,8 @@ class wsRouter {
 
   createGame(data, ws) {
     let gameCode = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0,5).toUpperCase()
+    // let exists = this.rPub.exists(gameCode)
+    // console.log('It does not exist')
     ws.channel = gameCode
     this.rSub.subscribe(gameCode)
     let json = {
@@ -91,8 +93,7 @@ class wsRouter {
           } else {
             category = fullCategory
           }
-          console.log(category)
-          this.rPub.hmset([gameCode, category, body])
+          this.rPub.hmset(gameCode, category, body)
           this.rPub.publish(gameCode, JSON.stringify({
             header: 'gameCategory',
             category: category
@@ -123,12 +124,23 @@ class wsRouter {
           header: 'sendQuestionResults',
           user: ws.user,
           result: data.result,
-          points: points
+          points: points,
+          gameCode: gameCode
+        }
+
+        if (data.result) {
+          this.rPub.incrby(gameCode+ws.user, points)
         }
 
         this.rPub.publish(gameCode, JSON.stringify(json))
       }
     }.bind(this))
+  }
+
+  addPoints(data, ws) {
+    if (ws.user !== data.user) {
+      this.rPub.incrby(data.gameCode+ws.user, data.points)
+    }
   }
 }
 
