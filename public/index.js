@@ -14,8 +14,8 @@ let questionResults = document.querySelector('#question-results')
 let socket;
 let username;
 let currentQuestion;
-const url = 'http://192.168.3.106:3000'
-const wsurl = 'ws://192.168.3.106:3000'
+const url = 'https://enigmatic-beyond-50418.herokuapp.com/'
+const wsurl = 'ws://enigmatic-beyond-50418.herokuapp.com/'
 
 function connect(e) {
   e.preventDefault()
