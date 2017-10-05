@@ -15,7 +15,7 @@ const router = express.Router();
 
 const triviaURL = 'https://opentdb.com/api.php?';
 
-app.use( express.static( __dirname + '/public' ));
+app.use( express.static( __dirname + '/src' ));
 
 router.get('/', function(req, res) {
   res.sendFile('/public/index.html', {root: __dirname })
