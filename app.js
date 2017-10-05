@@ -6,8 +6,8 @@ const cookieParser = require('cookie-parser')
 const redis = require('redis')
 const questionRouter = require('./routes/question');
 
-const rPub = redis.createClient();
-const rSub = redis.createClient();
+const rPub = redis.createClient(process.env.REDIS_URL);
+const rSub = redis.createClient(process.env.REDIS_URL);
 
 const port = process.env.PORT || 3000;
 const app = express();
