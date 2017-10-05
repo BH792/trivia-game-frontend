@@ -45,11 +45,25 @@ function getQuestion() {
     .then(question => showQuestion(question))
 }
 
-
 function SocketReceiveRouter(msgEvent) {
   let dataJSON = JSON.parse(msgEvent.data)
   console.log(dataJSON);
   if (SocketReceive[dataJSON.header]) {
     (SocketReceive[dataJSON.header])(dataJSON)
   }
+}
+
+function checkGameOver() {
+  let questions = document.querySelectorAll('button.question-button:disabled')
+  console.log('game over')
+  if (questions.length === 25) {
+    let playerOneScore = parseInt(document.querySelector('#playerOneScore').innerText)
+    let playerTwoScore = parseInt(document.querySelector('#playerTwoScore').innerText)
+    let playerOneName = document.querySelector('#playerOneName').innerText
+    let playerTwoName = document.querySelector('#playerTwoName').innerText
+    let message = 'Game Over, '
+    playerOneScore > playerTwoScore ? message += playerOneName : message += playerTwoName
+    alert(message + ' wins!')
+  }
+  console.log('game over')
 }

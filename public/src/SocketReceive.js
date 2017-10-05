@@ -110,8 +110,10 @@ const SocketReceive = (function SocketReceive() {
       } else {
         playerTwoScore.innerHTML = parseInt(playerTwoScore.innerHTML) + json.points
       }
+
     }
 
+    checkGameOver()
     results.innerHTML = `${json.user} was ${json.result ? 'correct' : 'wrong'}, the answer was ${answer}! This question was worth ${json.points}`
   }
 
